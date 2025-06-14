@@ -1,0 +1,20 @@
+{
+  "username": "Bobo",
+  "email": "iborbor@bib.com",
+  "id": "user_1749850856143",
+  "role": "user",
+  "banned": false,
+  "password": "bobo",
+  "bankDetails": {
+    "bankName": "",
+    "accountName": "",
+    "accountNumber": ""
+  },
+  "points": 0,
+  "referralCode": "Bobo",
+  "referredBy": "Chilem",
+  "dateOfRegistration": "2025-06-13T21:40:56.143Z",
+  "lastLogin": "2025-06-13T21:41:04.185Z",
+  "ip": "::1",
+  "notifications": []
+}

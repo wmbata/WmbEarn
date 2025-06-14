@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Bank Details - WmbEarn</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --blue: #0077cc;
+      --green: #00aa00;
+      --yellow: #ffcc00;
+      --light-bg: #e6f6ff;
+      --white: #fff;
+      --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background-color: var(--light-bg);
+      color: #333;
+    }
+
+    header {
+      background-color: var(--blue);
+      color: var(--white);
+      padding: 20px;
+      text-align: center;
+      border-bottom: 5px solid var(--yellow);
+      box-shadow: var(--shadow);
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 28px;
+      letter-spacing: 1px;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 30px auto;
+      background: var(--white);
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: var(--shadow);
+      transition: all 0.3s ease;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      font-weight: bold;
+      color: var(--blue);
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: border-color 0.3s;
+    }
+
+    input:focus {
+      border-color: var(--blue);
+      outline: none;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: var(--green);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #008800;
+    }
+
+    .msg {
+      margin-top: 15px;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .success {
+      color: var(--green);
+    }
+
+    .error {
+      color: red;
+    }
+
+    .details-box {
+      background-color: #f0faff;
+      padding: 20px;
+      border-radius: 12px;
+      border-left: 6px solid var(--blue);
+      box-shadow: var(--shadow);
+    }
+
+    .details-box p {
+      margin: 10px 0;
+      font-size: 16px;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        margin: 15px;
+        padding: 20px;
+      }
+
+      header h1 {
+        font-size: 22px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>WmbEarn - Bank Details</h1>
+  </header>
+
+  <div class="container">
+    <div id="bankForm" style="display:none;">
+      <div class="form-group">
+        <label for="bankName">Bank Name</label>
+        <input type="text" id="bankName" placeholder="e.g., Access Bank" />
+      </div>
+
+      <div class="form-group">
+        <label for="accountName">Account Name</label>
+        <input type="text" id="accountName" placeholder="e.g., John Doe" />
+      </div>
+
+      <div class="form-group">
+        <label for="accountNumber">Account Number</label>
+        <input type="text" id="accountNumber" placeholder="e.g., 1234567890" maxlength="10" />
+      </div>
+
+      <button onclick="saveBankDetails()">Save Bank Details</button>
+    </div>
+
+    <div id="bankDisplay" class="details-box" style="display:none;"></div>
+
+    <div class="msg" id="message"></div>
+  </div>
+
+  <script>
+    let currentUser;
+
+    fetch("/api/check-login")
+      .then(res => res.json())
+      .then(data => {
+        if (!data.loggedIn) {
+          window.location.href = "login.html";
+          return;
+        }
+
+        fetch(`/api/user/${data.username}`)
+          .then(res => res.json())
+          .then(user => {
+            currentUser = user;
+            const bank = user.bankDetails || {};
+            const hasDetails = bank.bankName && bank.accountName && bank.accountNumber;
+
+            if (hasDetails) {
+              document.getElementById("bankDisplay").style.display = "block";
+              document.getElementById("bankDisplay").innerHTML = `
+                <p><strong>Bank Name:</strong> ${bank.bankName}</p>
+                <p><strong>Account Name:</strong> ${bank.accountName}</p>
+                <p><strong>Account Number:</strong> ${bank.accountNumber}</p>
+              `;
+            } else {
+              document.getElementById("bankForm").style.display = "block";
+            }
+          });
+      });
+
+    function saveBankDetails() {
+      const bankName = document.getElementById("bankName").value.trim();
+      const accountName = document.getElementById("accountName").value.trim();
+      const accountNumber = document.getElementById("accountNumber").value.trim();
+      const message = document.getElementById("message");
+
+      if (!bankName || !accountName || !accountNumber) {
+        message.textContent = "Please fill in all fields.";
+        message.className = "msg error";
+        return;
+      }
+
+      fetch("/api/update-bank", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: currentUser.id,
+          bankDetails: { bankName, accountName, accountNumber }
+        })
+      }).then(res => {
+        if (res.ok) {
+          message.textContent = "Bank details saved successfully!";
+          message.className = "msg success";
+          setTimeout(() => location.reload(), 1000);
+        } else {
+          message.textContent = "Error saving bank details.";
+          message.className = "msg error";
+        }
+      });
+    }
+  </script>
+</body>
+</html>

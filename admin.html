@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Dashboard - WmbEarn</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #e6f4ff;
+      margin: 0;
+      padding: 20px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 20px;
+      border-bottom: 3px solid #008000;
+    }
+
+    h1 {
+      color: #ffcc00;
+      font-size: 28px;
+      margin: 0;
+    }
+
+    select {
+      padding: 10px;
+      border-radius: 8px;
+      border: 2px solid #0000ff;
+      font-size: 16px;
+    }
+
+    h2 {
+      color: #0000ff;
+      margin-top: 30px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background: #f0faff;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    th, td {
+      padding: 14px;
+      border-bottom: 1px solid #ccc;
+      text-align: left;
+      font-size: 15px;
+      vertical-align: top;
+    }
+
+    th {
+      background-color: #0000cc;
+      color: white;
+    }
+
+    tr:nth-child(even) {
+      background-color: #dff4ff;
+    }
+
+    .btn {
+      padding: 8px 12px;
+      margin: 2px;
+      border-radius: 6px;
+      font-size: 14px;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .confirm-btn {
+      background-color: #008000;
+      color: white;
+    }
+
+    .confirm-btn:hover {
+      background-color: #005c00;
+    }
+
+    .decline-btn {
+      background-color: #cc0000;
+      color: white;
+    }
+
+    .decline-btn:hover {
+      background-color: #990000;
+    }
+
+    .message {
+      margin-top: 15px;
+      color: green;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>WmbEarn Admin Dashboard</h1>
+    <select id="menuSelect">
+      <option disabled selected>-- Manage --</option>
+      <option value="manage-users.html">Manage Users</option>
+      <option value="manage-ads.html">Manage Ads</option>
+      <option value="send-message.html">Send Message</option>
+    </select>
+  </header>
+
+  <h2>Withdrawal Requests</h2>
+  <table id="withdrawTable">
+    <thead>
+      <tr>
+        <th>Username</th>
+        <th>User ID</th>
+        <th>Amount (NGN)</th>
+        <th>Date</th>
+        <th>Bank Details</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Withdrawal rows will load here -->
+    </tbody>
+  </table>
+
+  <div class="message" id="actionMessage"></div>
+
+  <script>
+    // Navigation
+    document.getElementById("menuSelect").addEventListener("change", function () {
+      window.location.href = this.value;
+    });
+
+    // Load withdrawal requests with bank details
+    function loadWithdrawals() {
+      fetch("/api/withdrawals")
+        .then(res => res.json())
+        .then(data => {
+          const tbody = document.querySelector("#withdrawTable tbody");
+          tbody.innerHTML = "";
+
+          if (!data.length) {
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;">No withdrawal requests found.</td></tr>`;
+            return;
+          }
+
+          data.forEach(req => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+              <td>${req.username}</td>
+              <td>${req.id}</td>
+              <td>₦${parseFloat(req.amount).toFixed(2)}</td>
+              <td>${new Date(req.date).toLocaleString()}</td>
+              <td>
+                Bank: ${req.bankDetails.bankName || "N/A"}<br>
+                Acc. Name: ${req.bankDetails.accountName || "N/A"}<br>
+                Acc. No: ${req.bankDetails.accountNumber || "N/A"}
+              </td>
+              <td>
+                <button class="btn confirm-btn" onclick="handleAction('${req.id}', 'confirm')">Confirm</button>
+                <button class="btn decline-btn" onclick="handleAction('${req.id}', 'decline')">Decline</button>
+              </td>
+            `;
+            tbody.appendChild(row);
+          });
+        })
+        .catch(() => {
+          document.getElementById("actionMessage").textContent = "Failed to load withdrawal requests.";
+        });
+    }
+
+    // Handle confirm or decline actions
+    function handleAction(userId, action) {
+      fetch(`/api/withdrawals/${action}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ requestId: userId }) // Must match server-side param: userId
+      })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("actionMessage").textContent = data.message || "Action completed.";
+        loadWithdrawals();
+      })
+      .catch(() => {
+        document.getElementById("actionMessage").textContent = "Server error.";
+      });
+    }
+
+    // Initial load
+    loadWithdrawals();
+  </script>
+</body>
+</html>

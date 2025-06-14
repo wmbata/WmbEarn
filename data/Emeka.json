@@ -1,0 +1,20 @@
+{
+  "username": "Emeka",
+  "email": "emeka@gmail.com",
+  "id": "user_1749850228653",
+  "role": "user",
+  "banned": false,
+  "password": "emeka",
+  "bankDetails": {
+    "bankName": "",
+    "accountName": "",
+    "accountNumber": ""
+  },
+  "points": 0,
+  "referralCode": "Emeka",
+  "referredBy": "Chilem",
+  "dateOfRegistration": "2025-06-13T21:30:28.653Z",
+  "lastLogin": "2025-06-13T21:30:36.452Z",
+  "ip": "::1",
+  "notifications": []
+}

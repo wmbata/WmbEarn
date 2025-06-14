@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>WmbEarn - Homepage</title>
+
+  <link rel="icon" href="/favico.png" type="image/png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    :root {
+      --blue: #1a73e8;
+      --green: #34a853;
+      --yellow: #fbbc04;
+      --bg-light: #eef6f9;
+      --text-dark: #202124;
+      --text-light: #5f6368;
+      --red: #d93025;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, var(--blue), var(--green));
+      color: var(--text-dark);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .navbar {
+      background-color: var(--blue);
+      padding: 15px 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    .navbar h1 {
+      color: var(--yellow);
+      font-weight: 900;
+      font-size: 1.8rem;
+      margin: 0;
+      letter-spacing: 1.5px;
+    }
+    .top-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 20px 0;
+      max-width: 480px;
+      margin: 0 auto 20px;
+      width: 100%;
+    }
+    .icon-btn {
+      background: none;
+      border: none;
+      font-size: 1.4rem;
+      color: var(--yellow);
+      cursor: pointer;
+      position: relative;
+    }
+    .notif-badge {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      background: var(--green);
+      color: white;
+      font-size: 0.7rem;
+      font-weight: bold;
+      padding: 2px 6px;
+      border-radius: 50%;
+      box-shadow: 0 0 0 2px white;
+      display: none;
+    }
+    .logout-btn {
+      background: var(--red);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 8px 14px;
+      font-weight: bold;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .container {
+      flex: 1;
+      max-width: 480px;
+      margin: 0 auto 100px;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(10px);
+    }
+    #user-section {
+      display: none;
+      gap: 15px;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      border-radius: 14px;
+      flex-direction: row;
+      align-items: center;
+    }
+    .profile-pic {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      border: 3px solid var(--yellow);
+      object-fit: cover;
+    }
+    .user-info h2, .user-info p {
+      margin: 4px 0;
+    }
+    .points {
+      font-weight: 700;
+      font-size: 1.2rem;
+      color: white;
+      background-color: var(--blue);
+      padding: 6px 10px;
+      border-radius: 8px;
+      display: inline-block;
+    }
+    .bank-details {
+      background: rgba(26, 115, 232, 0.15);
+      border-left: 5px solid var(--green);
+      padding: 12px 16px;
+      border-radius: 10px;
+      margin-top: 14px;
+      color: var(--text-dark);
+      font-size: 0.95rem;
+    }
+    .bank-details p {
+      margin: 6px 0;
+      font-weight: 500;
+    }
+    .bank-details strong {
+      color: var(--blue);
+    }
+    #referralContainer {
+      background: rgba(255, 255, 255, 0.08);
+      padding: 12px 14px;
+      border: 2px dashed var(--yellow);
+      border-radius: 10px;
+      margin-top: 18px;
+    }
+    #referralContainer label {
+      color: var(--yellow);
+    }
+    #referralContainer input {
+      background: transparent;
+      color: white;
+      border: 1px solid var(--green);
+      padding: 8px;
+      border-radius: 6px;
+      flex: 1;
+    }
+    #referralContainer button {
+      background: var(--green);
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    #copyMessage {
+      color: var(--green);
+      font-weight: bold;
+      margin-top: 6px;
+      display: none;
+    }
+    .bottom-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(255, 255, 255, 0.95);
+      display: flex;
+      justify-content: space-around;
+      padding: 12px 0;
+      border-top: 1px solid #ccc;
+      z-index: 1000;
+    }
+    .bottom-bar button {
+      background: none;
+      border: none;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: 0.85rem;
+      color: #333;
+      font-weight: 600;
+      padding: 4px 0;
+    }
+    .bottom-bar button i {
+      font-size: 1.5rem;
+      margin-bottom: 4px;
+    }
+    @media (max-width: 520px) {
+      .container {
+        margin: 0 15px 100px;
+      }
+      #user-section {
+        flex-direction: column;
+        text-align: center;
+      }
+      .profile-pic {
+        margin-bottom: 12px;
+      }
+      .user-info {
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="navbar"><h1>WmbEarn</h1></div>
+
+<div class="top-actions">
+  <button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+  <button class="icon-btn" title="Notifications" onclick="goToNotifications()">
+    <i class="fas fa-bell"></i>
+    <span id="notif-badge" class="notif-badge">0</span>
+  </button>
+</div>
+
+<div class="container">
+  <!-- Guest section (initially hidden) -->
+  <div id="guest-section" style="display: none; flex-direction: column; gap: 20px; align-items: center; text-align: center;">
+    <h2 style="color: white;">Welcome to <span style="color: var(--yellow); font-weight: bold;">WmbEarn</span>!</h2>
+    <p style="color: #f1f1f1; font-size: 1rem; max-width: 360px;">
+      Earn real money by watching ads, referring friends, and completing simple tasks. Withdraw your earnings instantly and securely. Join thousands already earning daily!
+    </p>
+    <button class="btn btn-blue" onclick="window.location.href='login.html'" style="background: var(--blue); color: white; padding: 12px 20px; border-radius: 8px; font-weight: bold; border: none; width: 80%; max-width: 300px;">
+      <i class="fas fa-sign-in-alt" style="margin-right: 8px;"></i> Login
+    </button>
+    <button class="btn btn-green" onclick="window.location.href='register.html'" style="background: var(--green); color: white; padding: 12px 20px; border-radius: 8px; font-weight: bold; border: none; width: 80%; max-width: 300px;">
+      <i class="fas fa-user-plus" style="margin-right: 8px;"></i> Sign Up Now
+    </button>
+    <button class="btn btn-yellow" onclick="window.location.href='contact.html'" style="background: var(--yellow); color: var(--text-dark); padding: 12px 20px; border-radius: 8px; font-weight: bold; border: none; width: 80%; max-width: 300px;">
+      <i class="fas fa-envelope" style="margin-right: 8px;"></i> Contact Us
+    </button>
+    <p style="color: #ddd; font-size: 0.9rem; margin-top: 14px;">Create an account and start earning immediately!</p>
+  </div>
+
+  <!-- User section (initially hidden) -->
+  <div id="user-section">
+    <img id="profilePic" src="default-profile.png" alt="Profile Picture" class="profile-pic" />
+    <div class="user-info">
+      <h2 id="username"></h2>
+      <p id="email"></p>
+      <p class="points" id="points">0.0000 NGN</p>
+      <div class="bank-details" id="bankDetails"></div>
+      <div id="referralContainer">
+        <label>Your Referral Link:</label>
+        <div style="display: flex; gap: 8px; margin-top: 6px;">
+          <input id="referralLink" type="text" readonly />
+          <button onclick="copyReferral()">Copy</button>
+        </div>
+        <div id="copyMessage">Copied successfully!</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<nav class="bottom-bar">
+  <button onclick="window.location.href='withdraw.html'"><i class="fas fa-wallet"></i><span>Withdraw</span></button>
+  <button onclick="window.location.href='ads.html'"><i class="fas fa-play-circle"></i><span>Watch Ads</span></button>
+  <button onclick="window.location.href='bank.html'"><i class="fas fa-university"></i><span>Bank</span></button>
+  <button onclick="window.location.href='https://wa.me/2347031204245'"><i class="fab fa-whatsapp"></i><span>Contact Us</span></button>
+</nav>
+
+<script>
+  const guestSection = document.getElementById('guest-section');
+  const userSection = document.getElementById('user-section');
+  const usernameEl = document.getElementById('username');
+  const emailEl = document.getElementById('email');
+  const pointsEl = document.getElementById('points');
+  const bankDetailsEl = document.getElementById('bankDetails');
+
+  async function logout() {
+    await fetch('/api/logout', { method: 'POST' });
+    localStorage.removeItem('currentUser');
+    location.reload();
+  }
+
+  function goToNotifications() {
+    sessionStorage.setItem('visitedNotifications', 'true');
+    window.location.href = 'notifications.html';
+  }
+
+  async function loadUser() {
+    const user = JSON.parse(localStorage.getItem('currentUser'));
+
+    if (!user) {
+      guestSection.style.display = 'flex';
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/user/${user.username}`);
+      if (!res.ok) throw new Error('User not found');
+      const data = await res.json();
+
+      usernameEl.textContent = data.username || 'Unknown User';
+      emailEl.textContent = data.email || '';
+      animatePoints(parseFloat(data.points || 0));
+
+      const bank = data.bankDetails || {};
+      const hasDetails = bank.bankName && bank.accountName && bank.accountNumber;
+      bankDetailsEl.innerHTML = hasDetails
+        ? `<p><strong>Bank Name:</strong> ${bank.bankName}</p>
+           <p><strong>Account Name:</strong> ${bank.accountName}</p>
+           <p><strong>Account Number:</strong> ${bank.accountNumber}</p>`
+        : `<p>No bank details added yet.</p>`;
+
+      document.getElementById('referralLink').value =
+        `${window.location.origin}/register.html?ref=${encodeURIComponent(data.username)}`;
+
+      userSection.style.display = 'flex';
+      guestSection.style.display = 'none';
+    } catch (error) {
+      console.error('Error loading user:', error);
+      guestSection.style.display = 'flex';
+      userSection.style.display = 'none';
+    }
+  }
+
+  function animatePoints(finalValue) {
+    let start = 0;
+    const duration = 1500;
+    const startTime = performance.now();
+
+    function step(currentTime) {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const currentPoints = (start + (finalValue - start) * progress).toFixed(4);
+      pointsEl.textContent = `${currentPoints} NGN`;
+      if (progress < 1) requestAnimationFrame(step);
+    }
+
+    requestAnimationFrame(step);
+  }
+
+  function copyReferral() {
+    const input = document.getElementById('referralLink');
+    input.select();
+    input.setSelectionRange(0, 99999);
+    navigator.clipboard.writeText(input.value)
+      .then(() => {
+        const msg = document.getElementById('copyMessage');
+        msg.style.display = 'block';
+        setTimeout(() => { msg.style.display = 'none'; }, 2000);
+      })
+      .catch(() => alert('Failed to copy link'));
+  }
+
+  window.onload = loadUser;
+</script>
+
+</body>
+</html>

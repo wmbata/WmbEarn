@@ -1,0 +1,20 @@
+{
+  "username": "Kika",
+  "email": "kika@gmail.com",
+  "id": "user_1749849581691",
+  "role": "user",
+  "banned": false,
+  "password": "kikam",
+  "bankDetails": {
+    "bankName": "",
+    "accountName": "",
+    "accountNumber": ""
+  },
+  "points": 0,
+  "referralCode": "Kika",
+  "referredBy": "Chilem",
+  "dateOfRegistration": "2025-06-13T21:19:41.691Z",
+  "lastLogin": "2025-06-13T21:19:46.762Z",
+  "ip": "::1",
+  "notifications": []
+}

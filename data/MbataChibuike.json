@@ -1,0 +1,32 @@
+{
+  "username": "MbataChibuike",
+  "displayName": "MbataChibuike",
+  "email": "wmbata2@gmail.com",
+  "password": "MbataemekA",
+  "id": "admin_001",
+  "role": "admin",
+  "points": 1000,
+  "referralCode": "admin",
+  "referredBy": null,
+  "dateOfRegistration": "2025-06-12T18:18:33.753Z",
+  "lastLogin": "2025-06-13T21:06:04.591Z",
+  "ip": "127.0.0.1",
+  "bankDetails": {},
+  "notifications": [
+    {
+      "message": "Hi",
+      "date": "6/13/2025, 1:59:26 PM",
+      "from": "admin"
+    },
+    {
+      "message": "Hi",
+      "date": "6/13/2025, 2:01:54 PM",
+      "from": "admin"
+    },
+    {
+      "message": "Good day, our site is on maintenance",
+      "date": "6/13/2025, 4:22:38 PM",
+      "from": "admin"
+    }
+  ]
+}

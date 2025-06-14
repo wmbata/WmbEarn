@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Withdraw Funds - WmbEarn</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --green: #28a745;
+      --blue: #007bff;
+      --yellow: #ffc107;
+      --white: #ffffff;
+      --error: #dc3545;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: var(--blue);
+      color: var(--white);
+    }
+
+    header {
+      background: #0056b3;
+      padding: 15px 20px;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .logo-title {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: var(--yellow);
+      animation: glow 2s ease-in-out infinite alternate;
+      letter-spacing: 1px;
+    }
+
+    @keyframes glow {
+      from {
+        text-shadow: 0 0 5px #ffe066, 0 0 10px #ffe066;
+      }
+      to {
+        text-shadow: 0 0 10px #fff700, 0 0 20px #fff700;
+      }
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 30px auto;
+      background: var(--white);
+      color: #222;
+      padding: 24px;
+      border-radius: 18px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      color: var(--blue);
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 1.5rem;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .icon-label::before {
+      content: "💸 ";
+    }
+
+    input[type="number"] {
+      width: 100%;
+      padding: 12px;
+      font-size: 1rem;
+      border: 1.5px solid var(--blue);
+      border-radius: 10px;
+      margin-bottom: 16px;
+    }
+
+    input[type="number"]:focus {
+      border-color: var(--yellow);
+      outline: none;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      font-size: 1rem;
+      font-weight: bold;
+      color: white;
+      background-color: var(--green);
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #218838;
+    }
+
+    .msg {
+      margin-top: 15px;
+      text-align: center;
+      padding: 10px;
+      border-radius: 8px;
+      font-weight: 500;
+      display: none;
+    }
+
+    .msg.error {
+      background-color: #fff5f5;
+      color: var(--error);
+      display: block;
+    }
+
+    .msg.success {
+      background-color: #eaffea;
+      color: var(--green);
+      display: block;
+    }
+
+    .withdrawals {
+      margin-top: 40px;
+    }
+
+    .withdrawals h2 {
+      font-size: 1.3rem;
+      color: var(--blue);
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .record {
+      background: #fffbe6;
+      padding: 12px;
+      border-left: 5px solid var(--yellow);
+      border-radius: 8px;
+      margin-bottom: 10px;
+      font-size: 0.95rem;
+    }
+
+    .record::before {
+      content: "📜 ";
+    }
+
+    .spinner {
+      display: none;
+      text-align: center;
+      margin-top: 15px;
+    }
+
+    .spinner::after {
+      content: "";
+      display: inline-block;
+      width: 28px;
+      height: 28px;
+      border: 4px solid var(--blue);
+      border-top: 4px solid var(--yellow);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        margin: 20px;
+        padding: 20px;
+      }
+      .logo-title {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo-title">WmbEarn</div>
+  </header>
+
+  <div class="container">
+    <h1>🏦 Withdraw Your Earnings</h1>
+
+    <label class="icon-label" for="amount">Amount to Withdraw (min ₦1000.00):</label>
+    <input type="number" id="amount" placeholder="Enter amount" step="0.0001" min="0">
+
+    <button onclick="requestWithdraw()">Request Withdrawal</button>
+
+    <div id="spinner" class="spinner"></div>
+    <div id="message" class="msg"></div>
+
+    <div class="withdrawals">
+      <h2>📜 Your Withdrawal Records</h2>
+      <div id="withdrawalList"></div>
+    </div>
+  </div>
+
+  <script>
+    let currentUser = null;
+
+    function toggleSpinner(show) {
+      document.getElementById("spinner").style.display = show ? "block" : "none";
+    }
+
+    function showMessage(text, isError = false) {
+      const msg = document.getElementById("message");
+      msg.textContent = (isError ? "❌ " : "✅ ") + text;
+      msg.className = "msg " + (isError ? "error" : "success");
+      msg.style.display = "block";
+    }
+
+    fetch("/api/check-login")
+      .then(res => res.json())
+      .then(data => {
+        if (!data.loggedIn) {
+          window.location.href = "/login.html";
+        } else {
+          currentUser = data;
+          fetchWithdrawals();
+        }
+      });
+
+    function requestWithdraw() {
+      const amount = parseFloat(document.getElementById("amount").value);
+      showMessage('', false);
+      toggleSpinner(true);
+
+      if (isNaN(amount) || amount < 1000.0) {
+        toggleSpinner(false);
+        showMessage("Minimum withdrawal is ₦1000.00", true);
+        return;
+      }
+
+      if (amount > currentUser.points) {
+        toggleSpinner(false);
+        showMessage(`Insufficient points. You have only ₦${currentUser.points.toFixed(4)} available.`, true);
+        return;
+      }
+
+      fetch("/api/request-withdrawal", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username: currentUser.username,
+          id: currentUser.id,
+          amount: amount
+        })
+      })
+      .then(res => {
+        toggleSpinner(false);
+        if (res.ok) {
+          showMessage("Withdrawal request submitted successfully!");
+          fetchWithdrawals();
+        } else {
+          showMessage("Something went wrong. Try again.", true);
+        }
+      });
+    }
+
+    function fetchWithdrawals() {
+      toggleSpinner(true);
+      fetch("/api/withdrawals")
+        .then(res => res.json())
+        .then(data => {
+          toggleSpinner(false);
+          const list = document.getElementById("withdrawalList");
+          list.innerHTML = "";
+
+          const userWithdrawals = data.filter(w => w.id === currentUser.id);
+
+          if (userWithdrawals.length === 0) {
+            list.innerHTML = "<p style='text-align:center;'>No withdrawal records found.</p>";
+            return;
+          }
+
+          userWithdrawals.reverse().forEach(w => {
+            const item = document.createElement("div");
+            item.className = "record";
+            item.innerHTML = `
+              <strong>₦${w.amount}</strong> on <em>${new Date(w.date).toLocaleString()}</em>
+            `;
+            list.appendChild(item);
+          });
+        });
+    }
+  </script>
+
+</body>
+</html>

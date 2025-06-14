@@ -1,0 +1,20 @@
+{
+  "username": "Wmbata",
+  "email": "Mbatachibuike2@gmail.com",
+  "id": "user_1749848997059",
+  "role": "user",
+  "banned": false,
+  "password": "wmbata",
+  "bankDetails": {
+    "bankName": "",
+    "accountName": "",
+    "accountNumber": ""
+  },
+  "points": 0,
+  "referralCode": "Wmbata",
+  "referredBy": "Chilem",
+  "dateOfRegistration": "2025-06-13T21:09:57.061Z",
+  "lastLogin": "2025-06-14T12:47:11.210Z",
+  "ip": "::1",
+  "notifications": []
+}

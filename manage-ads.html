@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Manage Ads - WmbEarn</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2fbff;
+      padding: 20px;
+    }
+
+    h1 {
+      color: #0077cc;
+    }
+
+    form {
+      margin-bottom: 20px;
+      padding: 15px;
+      background: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    }
+
+    input, select {
+      padding: 8px;
+      margin: 5px;
+      width: calc(100% - 20px);
+    }
+
+    button {
+      background: #0077cc;
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+    }
+
+    th, td {
+      padding: 10px;
+      border: 1px solid #ccc;
+    }
+
+    th {
+      background-color: #0000ff;
+      color: white;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    .delete-btn {
+      background-color: #ff0000;
+      padding: 6px 10px;
+      border-radius: 4px;
+    }
+
+    #message {
+      margin: 10px 0;
+      font-weight: bold;
+      color: green;
+    }
+  </style>
+</head>
+<body>
+  <h1>Manage Ads</h1>
+
+  <form id="adForm">
+    <input type="text" id="title" placeholder="Ad Title" required><br>
+    <input type="url" id="link" placeholder="Ad Link (https://...)" required><br>
+    <input type="number" id="time" placeholder="Time to Watch (seconds)" required><br>
+    <input type="number" id="point" placeholder="Points Rewarded" step="0.0001" required><br>
+    <select id="type" required>
+      <option value="">Select Ad Type</option>
+      <option value="Exotic">Exotic</option>
+      <option value="Game">Game</option>
+      <option value="Product">Product</option>
+    </select><br>
+    <button type="submit">Post Ad</button>
+  </form>
+
+  <div id="message"></div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Link</th>
+        <th>Time (s)</th>
+        <th>Points</th>
+        <th>Type</th>
+        <th>Date</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="adsTable">
+      <!-- Ads will be listed here -->
+    </tbody>
+  </table>
+
+  <script>
+    const messageEl = document.getElementById('message');
+
+    function showMessage(text, isError = false) {
+      messageEl.textContent = text;
+      messageEl.style.color = isError ? 'red' : 'green';
+      setTimeout(() => { messageEl.textContent = ''; }, 3000);
+    }
+
+    // Load ads on page load
+    function loadAds() {
+      fetch("/api/ads")
+        .then(res => {
+          if (!res.ok) throw new Error("Failed to load ads");
+          return res.json();
+        })
+        .then(ads => {
+          const tbody = document.getElementById("adsTable");
+          tbody.innerHTML = "";
+          ads.forEach((ad, index) => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+              <td>${ad.title}</td>
+              <td><a href="${ad.link}" target="_blank">View</a></td>
+              <td>${ad.time}</td>
+              <td>${ad.point}</td>
+              <td>${ad.type}</td>
+              <td>${ad.date}</td>
+              <td><button class="delete-btn" onclick="deleteAd(${index})">Delete</button></td>
+            `;
+            tbody.appendChild(tr);
+          });
+        })
+        .catch(err => {
+          console.error(err);
+          showMessage("Error loading ads: " + err.message, true);
+        });
+    }
+
+    // Submit new ad
+    document.getElementById("adForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const ad = {
+        title: document.getElementById("title").value,
+        link: document.getElementById("link").value,
+        time: parseInt(document.getElementById("time").value),
+        point: parseFloat(document.getElementById("point").value),
+        type: document.getElementById("type").value,
+        date: new Date().toLocaleDateString()
+      };
+
+      fetch("/api/ads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(ad)
+      })
+      .then(res => {
+        if (!res.ok) throw new Error("Failed to post ad");
+        showMessage("Ad posted successfully!");
+        this.reset();
+        loadAds();
+      })
+      .catch(err => {
+        console.error(err);
+        showMessage("Error posting ad: " + err.message, true);
+      });
+    });
+
+    function deleteAd(index) {
+      fetch(`/api/ads/${index}`, {
+        method: "DELETE"
+      })
+      .then(res => {
+        if (!res.ok) throw new Error("Failed to delete ad");
+        showMessage("Ad deleted successfully!");
+        loadAds();
+      })
+      .catch(err => {
+        console.error(err);
+        showMessage("Error deleting ad: " + err.message, true);
+      });
+    }
+
+    loadAds();
+  </script>
+</body>
+</html>

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login - WmbEarn</title>
+  <style>
+    :root {
+      --blue: #0077cc;
+      --green: #00a651;
+      --yellow: #ffcc00;
+      --bg-dark: #003366;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: var(--bg-dark);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .wmb-title {
+      font-size: 32px;
+      font-weight: bold;
+      color: var(--yellow);
+      text-align: center;
+      margin: 30px 20px 20px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+    }
+
+    .login-container {
+      background: rgba(0, 51, 102, 0.85);
+      padding: 30px 25px;
+      border-radius: 20px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+      width: 100%;
+      max-width: 400px;
+      animation: fadeIn 0.6s ease;
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(20px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+
+    .login-subtitle {
+      text-align: center;
+      font-size: 16px;
+      color: #ddd;
+      margin-bottom: 25px;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 14px;
+      margin-bottom: 15px;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      background-color: #e0f7ff;
+      color: #003366;
+    }
+
+    input::placeholder {
+      color: #666;
+    }
+
+    input:focus {
+      outline: 2px solid var(--blue);
+      background-color: white;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      background: var(--green);
+      color: #fff;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #00803d;
+    }
+
+    .register-link {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 14px;
+      color: #ccc;
+    }
+
+    .register-link a {
+      color: var(--yellow);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .register-link a:hover {
+      text-decoration: underline;
+    }
+
+    .error {
+      background-color: rgba(255, 0, 0, 0.1);
+      border-left: 5px solid red;
+      color: #ff8080;
+      padding: 10px;
+      border-radius: 10px;
+      margin-top: 10px;
+      font-size: 14px;
+      display: none;
+    }
+
+    @media (max-width: 480px) {
+      .login-container {
+        margin: 20px;
+        padding: 30px 20px;
+      }
+
+      .wmb-title {
+        font-size: 26px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="wmb-title">WmbEarn</div>
+
+  <div class="login-container">
+    <div class="login-subtitle">Welcome back! Please log in.</div>
+
+    <form id="loginForm">
+      <input type="text" id="emailOrUsername" placeholder="Email or Username" required />
+      <input type="password" id="password" placeholder="Password" required />
+      <button type="submit">Login</button>
+    </form>
+
+    <div class="error" id="errorMsg">Invalid login credentials.</div>
+
+    <div class="register-link">
+      Don’t have an account? <a href="register.html">Create one</a>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("loginForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const emailOrUsername = document.getElementById("emailOrUsername").value.trim();
+      const password = document.getElementById("password").value;
+      const errorMsg = document.getElementById("errorMsg");
+
+      fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ emailOrUsername, password })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          localStorage.setItem("currentUser", JSON.stringify({
+            username: data.username,
+            role: data.role,
+            id: data.id,
+            points: data.points
+          }));
+          window.location.href = data.role === "admin" ? "admin.html" : "index.html";
+        } else {
+          errorMsg.style.display = "block";
+          errorMsg.textContent = "Invalid username or password.";
+        }
+      })
+      .catch(err => {
+        errorMsg.style.display = "block";
+        errorMsg.textContent = "Server error. Please try again later.";
+        console.error("Login error:", err);
+      });
+    });
+  </script>
+
+</body>
+</html>

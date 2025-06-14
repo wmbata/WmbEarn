@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Manage Users - WmbEarn</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #eef6ff;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      color: #0000ff;
+      margin-bottom: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+    }
+    th, td {
+      padding: 10px;
+      border: 1px solid #ccc;
+      text-align: left;
+    }
+    th {
+      background-color: #0000ff;
+      color: white;
+    }
+    tr:nth-child(even) {
+      background-color: #f4f4f4;
+    }
+    button {
+      padding: 5px 10px;
+      margin: 2px;
+      border: none;
+      border-radius: 4px;
+      color: white;
+      cursor: pointer;
+    }
+    .ban { background-color: #ff0000; }
+    .unban { background-color: #008000; }
+    .add { background-color: #0077cc; }
+    .deduct { background-color: #ffaa00; color: black; }
+    .edit { background-color: #8000ff; }
+    input[type="number"], input[type="text"] {
+      width: 80px;
+      padding: 3px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Manage Users</h1>
+  <table id="usersTable">
+    <thead>
+      <tr>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Role</th>
+        <th>Points</th>
+        <th>Banned</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Filled dynamically -->
+    </tbody>
+  </table>
+
+  <script>
+    async function loadUsers() {
+      try {
+        const res = await fetch("/api/users");
+        if (!res.ok) throw new Error("Failed to load users");
+        const users = await res.json();
+
+        const tbody = document.querySelector("#usersTable tbody");
+        tbody.innerHTML = "";
+
+        users.forEach(user => {
+          const tr = document.createElement("tr");
+
+          tr.innerHTML = `
+            <td><input type="text" value="${user.username}" onchange="editUsername('${user.id}', this.value)" /></td>
+            <td>${user.email}</td>
+            <td>${user.role}</td>
+            <td>${parseFloat(user.points || 0).toFixed(4)}</td>
+            <td>${user.banned ? "Yes" : "No"}</td>
+            <td>
+              <button class="ban" onclick="banUser('${user.id}')">Ban</button>
+              <button class="unban" onclick="unbanUser('${user.id}')">Unban</button><br>
+              <input type="number" id="points_${user.id}" placeholder="+/-Pts" step="0.0001" />
+              <button class="add" onclick="addPoints('${user.id}')">Add</button>
+              <button class="deduct" onclick="deductPoints('${user.id}')">Deduct</button><br>
+              <button class="edit" onclick="resetPassword('${user.id}')">Reset Password</button>
+            </td>
+          `;
+
+          tbody.appendChild(tr);
+        });
+      } catch (error) {
+        alert(error.message);
+      }
+    }
+
+    async function banUser(id) {
+      try {
+        const res = await fetch("/api/users/ban", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id })
+        });
+        if (!res.ok) throw new Error("Failed to ban user");
+        alert("User banned successfully.");
+        loadUsers();
+      } catch (error) {
+        alert(error.message);
+      }
+    }
+
+    async function unbanUser(id) {
+      try {
+        const res = await fetch("/api/users/unban", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id })
+        });
+        if (!res.ok) throw new Error("Failed to unban user");
+        alert("User unbanned successfully.");
+        loadUsers();
+      } catch (error) {
+        alert(error.message);
+      }
+    }
+
+    async function addPoints(id) {
+      const input = document.getElementById(`points_${id}`);
+      const amount = parseFloat(input.value);
+      if (isNaN(amount) || amount <= 0) return alert("Enter a valid positive number");
+
+      try {
+        const res = await fetch("/api/users/add-points", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id, amount })
+        });
+        if (!res.ok) {
+          const err = await res.json();
+          throw new Error(err.error || "Failed to add points");
+        }
+        alert("Points added successfully.");
+        input.value = "";
+        loadUsers();
+      } catch (error) {
+        alert(error.message);
+      }
+    }
+
+    async function deductPoints(id) {
+      const input = document.getElementById(`points_${id}`);
+      const amount = parseFloat(input.value);
+      if (isNaN(amount) || amount <= 0) return alert("Enter a valid positive number");
+
+      try {
+        const res = await fetch("/api/users/deduct-points", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id, amount })
+        });
+        if (!res.ok) {
+          const err = await res.json();
+          throw new Error(err.error || "Failed to deduct points");
+        }
+        alert("Points deducted successfully.");
+        input.value = "";
+        loadUsers();
+      } catch (error) {
+        alert(error.message);
+      }
+    }
+
+    async function resetPassword(id) {
+      const newPass = prompt("Enter new password:");
+      if (!newPass) return;
+
+      try {
+        const res = await fetch("/api/users/reset-password", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id, newPassword: newPass })
+        });
+        if (!res.ok) {
+          const err = await res.json();
+          throw new Error(err.error || "Failed to reset password");
+        }
+        alert("Password reset successfully.");
+      } catch (error) {
+        alert(error.message);
+      }
+    }
+
+    async function editUsername(id, newUsername) {
+      newUsername = newUsername.trim();
+      if (!newUsername) return alert("Username cannot be empty");
+
+      try {
+        const res = await fetch("/api/users/update-username", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id, newUsername })
+        });
+        if (!res.ok) {
+          const err = await res.json();
+          throw new Error(err.error || "Failed to update username");
+        }
+        alert("Username updated successfully.");
+        loadUsers();
+      } catch (error) {
+        alert(error.message);
+      }
+    }
+
+    // Initial load
+    loadUsers();
+  </script>
+</body>
+</html>

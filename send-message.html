@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Send Message - WmbEarn Admin</title>
+  <style>
+    :root {
+      --primary: #0077cc;
+      --success: #28a745;
+      --background: #e6f4ff;
+      --form-bg: #ffffff;
+      --highlight: #00c49a;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--background);
+      display: flex;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    form {
+      background: var(--form-bg);
+      width: 100%;
+      max-width: 500px;
+      border-radius: 16px;
+      padding: 25px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      animation: fadeIn 0.6s ease-in-out;
+    }
+
+    h1 {
+      text-align: center;
+      color: var(--primary);
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+    }
+
+    label {
+      margin: 12px 0 6px;
+      font-weight: 500;
+      display: block;
+    }
+
+    select, textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border 0.2s;
+    }
+
+    select:focus, textarea:focus {
+      border-color: var(--primary);
+      outline: none;
+    }
+
+    select[multiple] {
+      height: 130px;
+    }
+
+    button {
+      margin-top: 20px;
+      width: 100%;
+      background: var(--highlight);
+      border: none;
+      color: white;
+      font-weight: bold;
+      font-size: 1rem;
+      padding: 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #00aa7e;
+    }
+
+    .success {
+      margin-top: 15px;
+      color: var(--success);
+      font-weight: 500;
+      text-align: center;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 600px) {
+      form {
+        padding: 20px 15px;
+      }
+
+      h1 {
+        font-size: 1.5rem;
+      }
+
+      button {
+        font-size: 0.95rem;
+        padding: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <form id="messageForm">
+    <h1>Send Message</h1>
+
+    <label for="target">Send To:</label>
+    <select id="target" required>
+      <option value="all">All Users (Broadcast)</option>
+      <option value="selected">Selected Users</option>
+    </select>
+
+    <div id="userSelectField" class="hidden">
+      <label for="userSelect">Search and Select Users:</label>
+      <select id="userSelect" multiple></select>
+    </div>
+
+    <label for="message">Message:</label>
+    <textarea id="message" rows="5" placeholder="Write your message here..." required></textarea>
+
+    <button type="submit">Send Message</button>
+    <div class="success" id="statusMsg"></div>
+  </form>
+
+  <script>
+    const target = document.getElementById('target');
+    const userSelectField = document.getElementById('userSelectField');
+    const userSelect = document.getElementById('userSelect');
+    const statusMsg = document.getElementById('statusMsg');
+    const form = document.getElementById('messageForm');
+
+    target.addEventListener('change', () => {
+      if (target.value === 'selected') {
+        userSelectField.classList.remove('hidden');
+        loadUsers();
+      } else {
+        userSelectField.classList.add('hidden');
+      }
+    });
+
+    function loadUsers() {
+      fetch('/api/users')
+        .then(res => res.json())
+        .then(users => {
+          userSelect.innerHTML = '';
+          users.forEach(user => {
+            const option = document.createElement('option');
+            option.value = user.username;
+            option.textContent = user.username;
+            userSelect.appendChild(option);
+          });
+        });
+    }
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const message = document.getElementById('message').value.trim();
+
+      const data = {
+        target: target.value,
+        message,
+        usernames: []
+      };
+
+      if (target.value === 'selected') {
+        const selected = Array.from(userSelect.selectedOptions).map(opt => opt.value);
+        if (selected.length === 0) {
+          statusMsg.textContent = "Please select at least one user.";
+          return;
+        }
+        data.usernames = selected;
+      }
+
+      fetch('/api/messages', {
+        method: 'POST',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      })
+      .then(res => {
+        if (res.ok) {
+          statusMsg.textContent = "Message sent successfully!";
+          form.reset();
+          userSelectField.classList.add('hidden');
+        } else {
+          statusMsg.textContent = "Failed to send message.";
+        }
+      });
+    });
+  </script>
+</body>
+</html>

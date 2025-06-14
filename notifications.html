@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Notifications - WmbEarn</title>
+  <style>
+    body {
+      background: #002244;
+      color: white;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+
+    h2 {
+      color: #FFD700;
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .message {
+      background: #004466;
+      padding: 15px;
+      margin: 10px auto;
+      max-width: 500px;
+      border-radius: 10px;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .withdrawal {
+      border-left: 5px solid #00ff88;
+    }
+
+    .admin {
+      border-left: 5px solid #ffa500;
+    }
+
+    .referral {
+      border-left: 5px solid #00bfff;
+    }
+
+    .label {
+      font-weight: bold;
+      color: #FFD700;
+      margin-bottom: 5px;
+    }
+
+    .date {
+      font-size: 0.85em;
+      color: #ccc;
+      text-align: right;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <h2>Notifications</h2>
+  <div id="messages-container">Loading messages...</div>
+
+  <script>
+    const container = document.getElementById('messages-container');
+    container.innerHTML = '';
+
+    function createMessageDiv(msg, type) {
+      const div = document.createElement('div');
+      div.className = `message ${type}`;
+      let label = '';
+      if (type === 'withdrawal') label = 'Withdrawal Message';
+      else if (type === 'admin') label = 'Admin Message';
+      else if (type === 'referral') label = 'Referral Message';
+
+      div.innerHTML = `
+        <div class="label">${label}</div>
+        <p>${msg.message}</p>
+        <div class="date">${new Date(msg.date).toLocaleString()}</div>
+      `;
+      container.appendChild(div);
+    }
+
+    async function loadMessages() {
+      try {
+        const [withdrawRes, adminRes, referralRes] = await Promise.all([
+          fetch('/api/user-withdraw-messages'),
+          fetch('/api/user-admin-messages'),
+          fetch('/api/user-referral-messages') // already returns only referral messages
+        ]);
+
+        if (!withdrawRes.ok && !adminRes.ok && !referralRes.ok)
+          throw new Error('Not logged in or failed to load messages.');
+
+        const withdrawals = withdrawRes.ok ? await withdrawRes.json() : [];
+        const adminMsgs = adminRes.ok ? await adminRes.json() : [];
+        const referralMsgs = referralRes.ok ? await referralRes.json() : [];
+
+        if (withdrawals.length === 0 && adminMsgs.length === 0 && referralMsgs.length === 0) {
+          container.textContent = "No notifications yet.";
+          return;
+        }
+
+        const allMessages = [
+          ...withdrawals.map(msg => ({ ...msg, type: 'withdrawal' })),
+          ...adminMsgs.map(msg => ({ ...msg, type: 'admin' })),
+          ...referralMsgs.map(msg => ({ ...msg, type: 'referral' }))
+        ].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        allMessages.forEach(msg => createMessageDiv(msg, msg.type));
+
+      } catch (err) {
+        container.textContent = err.message;
+      }
+    }
+
+    loadMessages();
+  </script>
+</body>
+</html>

@@ -1,0 +1,34 @@
+[
+  {
+    "title": "Search The World",
+    "link": "http://Google.com",
+    "time": 5,
+    "point": 0.0001,
+    "type": "Product",
+    "date": "6/7/2025"
+  },
+  {
+    "title": "Visit This website and stay for 18 seconds",
+    "link": "http://wmbata.wapaxo.com",
+    "time": 20,
+    "point": 0.0002,
+    "type": "Product",
+    "date": "6/7/2025"
+  },
+  {
+    "title": "Promo ",
+    "link": "http://wmbata.wapaxo.com",
+    "time": 5,
+    "point": 200,
+    "type": "Product",
+    "date": "6/7/2025"
+  },
+  {
+    "title": "Promo N100 points",
+    "link": "http://localhost:3000",
+    "time": 2,
+    "point": 100,
+    "type": "Product",
+    "date": "6/12/2025"
+  }
+]

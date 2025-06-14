@@ -1,0 +1,37 @@
+[
+  {
+    "username": "john123",
+    "message": "Dear john123, your withdrawal request of ₦1000 was confirmed. Thank you.",
+    "date": "2025-06-10T09:15:00.000Z"
+  },
+  {
+    "username": "wmbata",
+    "message": "Dear wmbata, your withdrawal request of ₦89200.0000 was confirmed. Thank you.",
+    "date": "2025-06-10T12:26:53.092Z"
+  },
+  {
+    "username": "wmbata",
+    "message": "Dear wmbata, your withdrawal request of ₦5200.0000 was confirmed. Thank you.",
+    "date": "2025-06-10T12:27:53.429Z"
+  },
+  {
+    "username": "Chilem",
+    "message": "Dear Chilem, your withdrawal request of ₦1000.0000 was declined. Points refunded to your account.",
+    "date": "2025-06-10T12:30:09.618Z"
+  },
+  {
+    "username": "wmbata",
+    "message": "Dear wmbata, your withdrawal request of ₦1000.0000 was confirmed. Thank you.",
+    "date": "2025-06-10T12:30:15.069Z"
+  },
+  {
+    "username": "Chilem",
+    "message": "Dear Chilem, your withdrawal request of ₦1000.0000 was confirmed. Thank you.",
+    "date": "2025-06-13T13:04:05.463Z"
+  },
+  {
+    "username": "Chilem",
+    "message": "Dear Chilem, your withdrawal request of ₦3000.0000 was confirmed. Thank you.",
+    "date": "2025-06-13T15:22:14.561Z"
+  }
+]

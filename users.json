@@ -1,0 +1,215 @@
+[
+  {
+    "username": "MbataChibuike",
+    "email": "wmbata2@gmail.com",
+    "id": "user001",
+    "role": "admin",
+    "password": "Mbataemeka",
+    "bankDetails": {
+      "bankName": "",
+      "accountName": "",
+      "accountNumber": ""
+    },
+    "points": 101.8001,
+    "dateOfRegistration": "2025-06-06",
+    "lastLogin": "2025-06-06",
+    "ip": "127.0.0.1",
+    "notifications": [
+      {
+        "message": "Hi everyone",
+        "date": "6/7/2025, 3:11:33 PM",
+        "from": "admin"
+      },
+      {
+        "message": "How far and how are you doing today",
+        "date": "6/7/2025, 11:52:50 PM",
+        "from": "admin"
+      },
+      {
+        "message": "Good day",
+        "date": "6/7/2025, 11:52:58 PM",
+        "from": "admin"
+      },
+      {
+        "message": "Hi everyone",
+        "date": "6/7/2025, 11:56:45 PM",
+        "from": "admin"
+      },
+      {
+        "message": "Hi everyone",
+        "date": "6/8/2025, 1:48:15 PM",
+        "from": "admin"
+      },
+      {
+        "message": "Hi guys",
+        "date": "6/8/2025, 1:53:38 PM",
+        "from": "admin"
+      },
+      {
+        "message": "Hi everyone",
+        "date": "6/8/2025, 1:58:34 PM",
+        "from": "admin"
+      },
+      {
+        "message": "Hi everyone",
+        "date": "6/9/2025, 2:22:36 PM",
+        "from": "admin"
+      }
+    ],
+    "referralCode": "MbataChibuike",
+    "referredBy": null,
+    "banned": false
+  },
+  {
+    "username": "wmbata",
+    "email": "mbatachibuike2@gmail.com",
+    "id": "user_1749242345896",
+    "role": "user",
+    "password": "mbataemekam",
+    "bankDetails": {
+      "bankName": "Opay bank",
+      "accountName": "Chile perpetua mbata",
+      "accountNumber": "7031204245"
+    },
+    "points": 1000.5999,
+    "dateOfRegistration": "2025-06-06T20:39:05.898Z",
+    "lastLogin": "2025-06-06T20:39:05.898Z",
+    "ip": "::1",
+    "notifications": [
+      {
+        "message": "How far and how are you doing today",
+        "date": "6/7/2025, 11:52:50 PM",
+        "from": "admin"
+      },
+      {
+        "message": "Good day",
+        "date": "6/7/2025, 11:52:58 PM",
+        "from": "admin"
+      },
+      {
+        "message": "Hi everyone",
+        "date": "6/7/2025, 11:56:45 PM",
+        "from": "admin"
+      },
+      {
+        "message": "Hi everyone",
+        "date": "6/8/2025, 1:48:15 PM",
+        "from": "admin"
+      },
+      {
+        "message": "Hi guys",
+        "date": "6/8/2025, 1:53:38 PM",
+        "from": "admin"
+      },
+      {
+        "message": "Hi everyone",
+        "date": "6/8/2025, 1:58:34 PM",
+        "from": "admin"
+      },
+      {
+        "message": "Hi everyone",
+        "date": "6/9/2025, 2:22:36 PM",
+        "from": "admin"
+      },
+      {
+        "message": "This is a test message. Please disregard.",
+        "date": "6/10/2025, 1:50:20 PM",
+        "from": "admin"
+      }
+    ],
+    "referralCode": "wmbata",
+    "referredBy": null,
+    "banned": false
+  },
+  {
+    "username": "Chilem",
+    "email": "chileta@gmail.com",
+    "id": "user_1749473089740",
+    "role": "user",
+    "password": "chileta",
+    "bankDetails": {
+      "bankName": "Opay",
+      "accountName": "Mbata Chile Perpetua",
+      "accountNumber": "7031204245"
+    },
+    "points": 2200.0003,
+    "dateOfRegistration": "2025-06-09T12:44:49.740Z",
+    "lastLogin": "2025-06-09T12:44:49.740Z",
+    "ip": "::1",
+    "notifications": [
+      {
+        "message": "Hi everyone",
+        "date": "6/9/2025, 2:22:36 PM",
+        "from": "admin"
+      },
+      {
+        "message": "This is a test message. Please disregard.",
+        "date": "6/10/2025, 1:50:20 PM",
+        "from": "admin"
+      }
+    ],
+    "referralCode": "Chilem",
+    "referredBy": null,
+    "banned": false
+  },
+  {
+    "username": "Tembe",
+    "email": "tembe@gmail.com",
+    "id": "user_1749564619507",
+    "role": "user",
+    "password": "tembe",
+    "bankDetails": {
+      "bankName": "",
+      "accountName": "",
+      "accountNumber": ""
+    },
+    "points": 0.0001,
+    "dateOfRegistration": "2025-06-10T14:10:19.507Z",
+    "lastLogin": "2025-06-10T14:10:19.507Z",
+    "ip": "::1",
+    "notifications": [],
+    "referralCode": "Tembe",
+    "referredBy": null,
+    "banned": false
+  },
+  {
+    "username": "Ikechukwu",
+    "email": "ikechukwu@gmail.com",
+    "id": "user_1749652399470",
+    "role": "user",
+    "password": "ikechukwu",
+    "bankDetails": {
+      "bankName": "",
+      "accountName": "",
+      "accountNumber": ""
+    },
+    "points": 0.0001,
+    "dateOfRegistration": "2025-06-11T14:33:19.470Z",
+    "lastLogin": "2025-06-11T14:33:19.470Z",
+    "ip": "::1",
+    "notifications": [],
+    "referralCode": "Ikechukwu",
+    "referredBy": "MbataChibuike",
+    "banned": false
+  },
+  {
+    "username": "Kila",
+    "email": "kila@gmail.com",
+    "id": "user_1749652563960",
+    "role": "user",
+    "password": "kilamm",
+    "bankDetails": {
+      "bankName": "",
+      "accountName": "",
+      "accountNumber": ""
+    },
+    "points": 0.0001,
+    "dateOfRegistration": "2025-06-11T14:36:03.960Z",
+    "lastLogin": "2025-06-11T14:36:03.962Z",
+    "ip": "::1",
+    "notifications": [],
+    "referralCode": "Kila",
+    "referredBy": "MbataChibuike",
+    "banned": false
+  }
+]

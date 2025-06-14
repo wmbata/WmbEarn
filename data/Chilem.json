@@ -1,0 +1,51 @@
+{
+  "username": "Chilem",
+  "email": "server@gmail.com",
+  "id": "user_1749819671820",
+  "role": "user",
+  "banned": false,
+  "password": "chilem",
+  "bankDetails": {
+    "bankName": "5788899",
+    "accountName": "Yuiiohyy",
+    "accountNumber": "5788578588"
+  },
+  "points": 5560.000300000001,
+  "referralCode": "Chilem",
+  "referredBy": null,
+  "dateOfRegistration": "2025-06-13T13:01:11.820Z",
+  "lastLogin": "2025-06-14T12:53:22.502Z",
+  "ip": "::1",
+  "notifications": [
+    {
+      "message": "Hi",
+      "date": "6/13/2025, 2:01:54 PM",
+      "from": "admin"
+    },
+    {
+      "message": "Good day, our site is on maintenance",
+      "date": "6/13/2025, 4:22:38 PM",
+      "from": "admin"
+    },
+    {
+      "from": "system",
+      "message": "You earned 30 points for referring Wmbata",
+      "date": "6/13/2025, 10:09:57 PM"
+    },
+    {
+      "from": "system",
+      "message": "You earned 30 points for referring Kika",
+      "date": "6/13/2025, 10:19:41 PM"
+    },
+    {
+      "from": "system",
+      "message": "You earned 30 points for referring Emeka",
+      "date": "6/13/2025, 10:30:28 PM"
+    },
+    {
+      "from": "system",
+      "message": "You earned 50 points for referring Bobo",
+      "date": "6/13/2025, 10:40:56 PM"
+    }
+  ]
+}
